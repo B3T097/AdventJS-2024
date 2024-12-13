@@ -32,33 +32,80 @@
  * @returns {'none' | 'crash' | 'eat'}
  */
 function moveTrain(board, mov) {
-    // Code here
-    return 'none';
+  let locomotora = "@", comida = "*", vagon = "o", vacio = "·";
+  let ubicacionLocomotora = board.reduce((prev, current, index) => {
+    if (current.includes(locomotora)) {
+      if (current.length > 1) {
+        return [index, current.split("").findIndex((value, index) => value == locomotora)];
+      } else {
+        return [index, 0];
+      }
+    } else {
+      return prev;
+    }
+  }, [0, 0]);
+
+  let nuevaUbicacion = [0, 0];
+  switch (mov) {
+    case "U":
+      if (ubicacionLocomotora[0] == 0) {
+        return "crash";
+      }
+      nuevaUbicacion = [ubicacionLocomotora[0] - 1, ubicacionLocomotora[1]];
+      break;
+    case "D":
+      if (ubicacionLocomotora[0] == board.length-1) {
+        return "crash";
+      }
+      nuevaUbicacion = [ubicacionLocomotora[0] + 1, ubicacionLocomotora[1]];
+      break;
+    case "R":
+      if (ubicacionLocomotora[1] == board[ubicacionLocomotora[0]].length - 1) {
+        return "crash";
+      }
+      nuevaUbicacion = [ubicacionLocomotora[0], ubicacionLocomotora[1] + 1];
+      break;
+    case "L":
+      if (ubicacionLocomotora[1] == 0) {
+        return "crash";
+      }
+      nuevaUbicacion = [ubicacionLocomotora[0], ubicacionLocomotora[1] - 1];
+      break;
   }
-  
-  // ==================================================
-  // ==================== EJEMPLOS ====================
-  // ==================================================
-  const board = [
-    '·····',
-    '*····',
-    '@····',
-    'o····',
-    'o····'
-  ]
-  
-  console.log(moveTrain(board, 'U'))
-  // ➞ 'eat'
-  // Porque el tren se mueve hacia arriba y encuentra una fruta mágica
-  
-  console.log(moveTrain(board, 'D'))
-  // ➞ 'crash'
-  // El tren se mueve hacia abajo y la cabeza se choca consigo mismo
-  
-  console.log(moveTrain(board, 'L'))
-  // ➞ 'crash'
-  // El tren se mueve a la izquierda y se choca contra la pared
-  
-  console.log(moveTrain(board, 'R'))
-  // ➞ 'none'
-  // El tren se mueve hacia derecha y hay un espacio vacío en la derecha
+
+  let item = board[nuevaUbicacion[0]].split("")[nuevaUbicacion[1]];
+  if (item == comida) {
+    return "eat";
+  } else if (item == vacio) {
+    return "none";
+  } else if (item == vagon) {
+    return 'crash';
+  }
+}
+
+// ==================================================
+// ==================== EJEMPLOS ====================
+// ==================================================
+const board = [
+  '·····',
+  '*····',
+  '····@',
+  '·····',
+  '·····'
+]
+
+console.log(moveTrain(board, 'U'))
+// ➞ 'eat'
+// Porque el tren se mueve hacia arriba y encuentra una fruta mágica
+
+console.log(moveTrain(board, 'D'))
+// ➞ 'crash'
+// El tren se mueve hacia abajo y la cabeza se choca consigo mismo
+
+console.log(moveTrain(board, 'L'))
+// ➞ 'crash'
+// El tren se mueve a la izquierda y se choca contra la pared
+
+console.log(moveTrain(board, 'R'))
+// ➞ 'none'
+// El tren se mueve hacia derecha y hay un espacio vacío en la derecha
